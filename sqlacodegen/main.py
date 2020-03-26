@@ -27,9 +27,12 @@ def main():
                         help="don't try to convert tables names to singular form")
     parser.add_argument('--noclasses', action='store_true',
                         help="don't generate classes, only tables")
+    parser.add_argument('--notables', action='store_true',
+                        help="don't generate tables, only classes")
     parser.add_argument('--nocomments', action='store_true', help="don't render column comments")
     parser.add_argument('--outfile', help='file to write output to (default: stdout)')
     args = parser.parse_args()
+
 
     if args.version:
         version = pkg_resources.get_distribution('sqlacodegen').parsed_version
@@ -37,6 +40,11 @@ def main():
         return
     if not args.url:
         print('You must supply a url\n', file=sys.stderr)
+        parser.print_help()
+        return
+
+    if not args.noclasses and not args.notables:
+        print('noclasses and notables cannot both be passed in.\n', file=sys.stderr)
         parser.print_help()
         return
 

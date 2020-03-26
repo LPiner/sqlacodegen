@@ -331,7 +331,7 @@ class CodeGenerator(object):
 {models}"""
 
     def __init__(self, metadata, noindexes=False, noconstraints=False, nojoined=False,
-                 noinflect=False, noclasses=False, indentation='    ', model_separator='\n\n',
+                 noinflect=False, noclasses=False, notables=False, indentation='    ', model_separator='\n\n',
                  ignored_tables=('alembic_version', 'migrate_version'), table_model=ModelTable,
                  class_model=ModelClass,  template=None, nocomments=False):
         super(CodeGenerator, self).__init__()
@@ -341,6 +341,7 @@ class CodeGenerator(object):
         self.nojoined = nojoined
         self.noinflect = noinflect
         self.noclasses = noclasses
+        self.notables = notables
         self.indentation = indentation
         self.model_separator = model_separator
         self.ignored_tables = ignored_tables
@@ -412,7 +413,7 @@ class CodeGenerator(object):
 
             # Only form model classes for tables that have a primary key and are not association
             # tables
-            if noclasses or not table.primary_key or table.name in association_tables:
+            if noclasses or not table.primary_key or table.name in association_tables and not notables:
                 model = self.table_model(table)
             else:
                 model = self.class_model(table, links[table.name], self.inflect_engine,
